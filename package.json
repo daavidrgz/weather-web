@@ -1,0 +1,29 @@
+{
+  "name": "weather-api",
+  "version": "1.0.0",
+  "description": "A simple weather api",
+  "scripts": {
+    "build": "browserify public/index.js -o public/bundle.js",
+    "watch": "watchify public/index.js -o public/bundle.js",
+    "start": "node server.js"
+  },
+  "author": "David",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^3.2.0",
+    "body-parser": "^1.19.0",
+    "change-case": "^4.1.2",
+    "chart.js": "^3.0.1",
+    "country-code-switch": "^1.0.1",
+    "country-emoji": "^1.5.6",
+    "country-flag-colors": "^0.0.3",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "jquery": "^3.6.0",
+    "open-weather-icons": "^0.0.8"
+  },
+  "devDependencies": {
+    "browserify": "^17.0.0",
+    "watchify": "^4.0.0"
+  }
+}

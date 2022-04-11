@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="assets/images/uicons-regular-rounded/css/uicons-regular-rounded.css">
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+	
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap" rel="stylesheet"> 
+	<title>The Weather</title>
+</head>
+<body>
+	<!-- ABSOLUTE POSITIONED ELEMENTS -->
+	<div class="error-message-container">
+		<img id="error-icon" src="assets/images/error.svg" alt="Error Icon">
+		<span id="error-message"></span>
+		<i id="close-error-message" class="fi-rr-cross"></i>
+	</div>
+
+	<nav class=nav-bar>
+		<!-- <div class=title-dots></div> -->
+		<div class="title-container">
+			<span class=title>The Weather</span>
+			<span class=subtitle>Around the world</span>
+		</div>
+		<!-- <div class=title-dots></div> -->
+	</nav>
+
+	<div class="main-container">
+
+		<div class="search-bar-container">
+			<input id="search-city" type="text" class="search-bar" name="city" placeholder="City Name (en)"></input>
+			<a type="submit" class="search-button"><i class="fi-rr-search" id="search-icon"></i></a>
+		</div>
+
+		<div class="title-tiles-container hide-left">
+			<div class="title-tile">
+				<div class=lines></div>
+				<span class="title-tile-text">Current Weather</span>
+				<div class=lines></div>
+			</div>
+			<div class="title-tile title-tile-map">
+				<div class=lines></div>
+				<span class="title-tile-text">
+					World Map
+					<div class="map-info-container">
+						<i id="map-info-icon" class="fi-rr-info"></i>
+						<span id="map-tooltip" class="tooltips">Click the map in order to get that location's weather</span>
+					</div>
+				</span>
+				
+				<div class=lines></div>
+			</div>
+		</div>
+		<div class=weather-info>
+			<i id="reload-button" class="fi-rr-refresh""></i>
+
+			<div class="city-container">
+				<span id="city">Cangas do Morrazo</span>
+				<div class="country-container">
+					<span id="country">ES</span>
+					<span id="country-flag"></span>
+					<span id="country-tooltip" class="tooltips">Spain</span>
+				</div>
+			</div>
+			
+			<div class="forecast-container">
+				<div class="temperature">
+					<div class="gradient-forecast-titles">Temperature</div>
+					<span id="current-temp">32</span>
+					<span>°C</span>
+					<div class="max-min-temp-container">
+						<img id="arrow-top" src="assets/images/right-arrow.svg"></img>
+						<span class="max-temp-container">
+							<span id="max-temp">20°C</span>
+							<span id="max-temp-tooltip" class="tooltips">Max Temp</span>
+						</span>
+						
+						<img id="arrow-bottom" src="assets/images/right-arrow.svg"></img>
+						<span class="min-temp-container">
+							<span id="min-temp">11°C</span>
+							<span id="min-temp-tooltip" class="tooltips">Min Temp</span>
+						</span>
+						
+					</div>
+
+					<div class="feels-like-container">
+						<span id="feels-like-tooltip" class="tooltips">Feels Like</span>
+						<i class="fi-rr-user feels-like-icon"></i>
+						<span id="feels-like">12°C</span>
+					</div>
+				</div>
+
+				<div class="vr weather-vr"></div>
+
+				<div class="forecast">
+					<div class="gradient-forecast-titles">Forecast</div>
+					<span id="current-forecast">Clouds</span>
+					<span id="forecast-description">Some clouds</span>
+					<img src="" id="forecast-icon" alt="Forecast Icon"></img>
+				</div>
+
+				<div class="vr weather-vr"></div>
+
+				<div class="weather-details">
+					<div class="gradient-forecast-titles">Details</div>
+					<span class="weather-details-titles">Wind</span>
+					<span id="current-wind" class="weather-details-data">18.0 km/h</span>
+					<span class="weather-details-titles">Humidity</span>
+					<span id="current-humidity" class="weather-details-data">62.0%</span>
+					<span class="weather-details-titles">Pressure</span>
+					<span id="current-pressure" class="weather-details-data">62.0%</span>
+					<span class="weather-details-titles">Cloudiness</span>
+					<span id="current-clouds" class="weather-details-data">62.0%</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="title-map-mobile title-tile hide-left">
+			<div class=lines></div>
+			<span class="title-tile-text">World Map
+				<div class="map-info-container">
+					<i id="map-info-icon" class="fi-rr-info"></i>
+					<span id="map-tooltip" class="tooltips">Click the map in order to get that location's weather</span>
+				</div>
+			</span>
+			<div class=lines></div>
+		</div>
+
+		<div id="mapid"></div>
+
+		<div class="hide-right weather-prediction-title">
+			<div class="lines"></div>
+			<span class="weather-prediction-text">Weather prediction</span>
+			<div class="lines"></div>
+		</div>
+		<div class="weather-prediction-container">
+			<div class="hourly-forecast-container">
+				<canvas id="hourly-temp-chart">Your browser does not support the canvas element.</canvas>
+			</div>
+			<div class="daily-forecast-container">
+			</div>
+
+		</div>
+
+
+		<div class="hide-left more-about-country">
+			<div class=lines></div>
+			<span class="more-about-text">
+				More about the
+				<div class="country-word">
+					<span id="country-word-1" class="country-letter">co</span></span>
+					<span id="country-word-2" class="country-letter">un</span></span>
+					<span id="country-word-3" class="country-letter">try</span></span>
+				</div>
+			</span>
+			<div class=lines></div>
+		</div>
+
+		<div class="all-country-info">
+			<div class="country-title">
+				<span id="country-name"></span>
+				<span id="native-country-name"></span>
+			</div>
+			<div class="country-info-container">
+				<div class=country-info-first-row>
+
+					<div class="left-info-container">
+						<div class="currencies-wraper">
+							<span class="country-info-titles">Currencies</span>
+							<div class="currencies-container">
+							</div>
+						</div>
+						<div class="languages-wraper">
+							<span class="country-info-titles">Languages</span>
+							<div class="languages-container">
+							</div>
+						</div>
+					</div>
+
+					<div class="vr country-vr"></div>
+					<div class="hr hr-mobile"></div>
+
+					<div class="center-info-container">
+						<div class="region-container">
+							<div class="region">
+								<span class="country-info-titles">Region</span>
+								<span id="region-text">Asia</span>
+							</div>
+							<div class="region">
+								<span class="country-info-titles">Capital</span>
+								<span id="capital-text">Hanoi</span>
+							</div>
+						</div>
+						<span class="current-time-text">Current time</span>
+						<div class="country-hour">
+							<span id="current-country-hour">18:58</span>
+							<span id="current-country-seconds">:20</span>
+						</div>
+					</div>
+
+					<div class="vr country-vr"></div>
+					<div class="hr hr-mobile"></div>
+					
+					<div class="right-info-container">
+						<div class="more-country-info-container">
+							<span class="more-country-info-titles">Subregion</span>
+							<span id="country-subregion" class="more-country-info-data">South Africa</span>
+						</div>
+						<div class="more-country-info-container">
+							<span class="more-country-info-titles">Gini Coefficient</span>
+							<span id="country-gini" class="more-country-info-data">34.7%</span>
+						</div>
+						<div class="more-country-info-container">
+							<span class="more-country-info-titles">Population</span>
+							<span id="country-population" class="more-country-info-data">34.100.200</span>
+						</div>
+						<div class="more-country-info-container">
+							<span class="more-country-info-titles">Area</span>
+							<span id="country-area" class="more-country-info-data">2.000.000 km²</span>
+						</div>
+						<div class="more-country-info-container">
+							<span class="more-country-info-titles">Borders With</span>
+							<span id="country-borders" class="more-country-info-data">SPA, FRA, GIB</span>
+						</div>
+						<div class="more-country-info-container">
+							<span class="more-country-info-titles">Calling Codes</span>
+							<span id="country-calling-codes" class="more-country-info-data">+34</span>
+						</div>
+					</div>
+				</div>
+
+				<div class=hr></div>
+
+				<div class="indicators-title">Country Indicators</div>
+				<div class="country-info-second-row">
+					<canvas id="violence-indicator" class="indicators-charts hide">Your browser does not support the canvas element.</canvas>
+					<canvas id="business-indicator" class="indicators-charts hide">Your browser does not support the canvas element.</canvas>
+					<canvas id="gdp-indicator" class="indicators-charts hide">Your browser does not support the canvas element.</canvas>
+					<canvas id="electricity-indicator" class="indicators-charts hide">Your browser does not support the canvas element.</canvas>
+					<canvas id="decade-temp-chart" class="indicators-charts hide">Your browser does not support the canvas element.</canvas>
+				</div>
+				
+			
+			</div>
+			
+		</div>
+
+		<footer>
+			<span class="footer-copy">© 2021 The Weather</span>
+			<div class="about-link">About</div>
+
+			<div id="about-popup" class="footer-popups">
+				<div class="popup-title">About</div>
+				<div class="popup-text">This webpage was made with enthusiasm from A Coruña, Spain by a computer's science univeristy 
+					student.<br><br>
+					The main objective was to learn and practice with all the web ecosystem but also to offer an useful service with pretty, polished animations. 
+					<br><br>I hope you take a great delight scrolling through all the information provided :)<br><br>
+					Much love 🖤
+				</div>
+				<div class="popup-close-button">Close</div>
+			</div>
+		</footer>
+	</div>
+	<script 
+		src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+		integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+		crossorigin=""
+	></script>
+	<script src="bundle.js"></script>
+</body>
+</html>
