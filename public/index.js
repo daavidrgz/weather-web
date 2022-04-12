@@ -215,8 +215,10 @@ function changeMapView(lat, lon) {
 function getCountryInfo(countryIso2) {
 	getCountryColors(countryIso2);
 
-	$.post('/api/country', {iso2: countryIso2}).done(function(data) {
-		let countryInfo = JSON.parse(data);
+	$.post('/api/country').done(function(data) {
+		let allCountryInfo = JSON.parse(data);
+		let countryInfo = allCountryInfo.find(country => country.alpha2Code == countryIso2)
+		if ( !countryInfo ) return
 
 		$('#country-name').text(capitalize.capitalCase(countrySwitch.ISO2toName(countryIso2)));
 		$('#native-country-name').text(countryInfo.nativeName);

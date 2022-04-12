@@ -79,8 +79,8 @@ app.post("/api/weather/prediction", function(req, res) {
 
 /* GET COUNTRY INFO */
 const countryKey = process.env.COUNTRY_KEY
-app.post("/api/country", function(req, res) {
-	httpGet(`http://api.countrylayer.com/v2/alpha/${req.body.iso2}?access_key=${countryKey}`, function(err, serverRes) {
+app.post("/api/country", function(_, res) {
+	httpGet(`http://api.countrylayer.com/v2/all?access_key=${countryKey}`, function(err, serverRes) {
 		if ( err )
 			console.error(`Error: ${err.message}`);
 		else
