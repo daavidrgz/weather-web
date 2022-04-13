@@ -5,13 +5,15 @@
   "scripts": {
     "build": "browserify public/index.js -o public/bundle.js",
     "watch": "watchify public/index.js -o public/bundle.js",
-    "dev": "concurrently --kill-others \"npm run start\" \"npm run watch\"",
+    "dev": "concurrently --kill-others \"npm run server\" \"npm run watch\"",
+    "server": "nodemon server.js",
     "start": "node server.js"
   },
   "author": "David",
   "license": "ISC",
   "dependencies": {
     "async": "^3.2.0",
+    "nodemon": "^2.0.15",
     "body-parser": "^1.19.0",
     "change-case": "^4.1.2",
     "concurrently": "^6.0.2",

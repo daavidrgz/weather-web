@@ -26925,25 +26925,29 @@ function changeMapView(lat, lon) {
 function getCountryInfo(countryIso2) {
 	getCountryColors(countryIso2);
 
-	$.post('/api/country').done(function(data) {
-		let allCountryInfo = JSON.parse(data);
-		let countryInfo = allCountryInfo.find(country => country.alpha2Code == countryIso2)
-		if ( !countryInfo ) return
+	$.post('/api/country', {iso2: countryIso2}).done(function(data) {
+		let countryInfo = JSON.parse(data);
+
+		console.log(countryInfo);
 
 		$('#country-name').text(capitalize.capitalCase(countrySwitch.ISO2toName(countryIso2)));
-		$('#native-country-name').text(countryInfo.nativeName);
+		$('#native-country-name').text(countryInfo.nativeName ?? "");
 
-		$('#region-text').text(countryInfo.region);
-		$('#country-subregion').text(countryInfo.subregion);
-		$('#capital-text').text(countryInfo.capital);
-		$('#country-population').text(countryInfo.population.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, '.'));
-		$('#country-area').text(countryInfo.area.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, '.') + ' km²');
-		$('#country-gini').text(countryInfo.gini + '%');
-		$('#country-calling-codes').text('+' + countryInfo.callingCodes.toString());
-		$('#country-borders').text(getBorderList(countryInfo.borders));
+		let population = countryInfo.population ?? "";
+		let area = countryInfo.area ?? "";
+		let callingCodes = countryInfo.callingCodes ?? "";
 
-		setCurrencies(countryInfo.currencies);
-		setLanguages(countryInfo.languages);
+		$('#region-text').text(countryInfo.region ?? "");
+		$('#country-subregion').text(countryInfo.subregion ?? "");
+		$('#capital-text').text(countryInfo.capital ?? "");
+		$('#country-population').text(population.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, '.'));
+		$('#country-area').text(area.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, '.') + ' km²');
+		$('#country-gini').text(countryInfo.gini ?? "" + '%');
+		$('#country-calling-codes').text('+' + callingCodes);
+		$('#country-borders').text(getBorderList(countryInfo.borders ?? []));
+
+		setCurrencies(countryInfo.currencies ?? []);
+		setLanguages(countryInfo.languages ?? []);
 		getCountryIdicators(countrySwitch.ISO2toISO3(countryIso2));
 	});
 }
@@ -27103,16 +27107,16 @@ function getCountryIdicators(countryIso3) {
 			indicators[i] = obj;
 		});
 
-		//Decade temp chart data parse
-		let decadeTemp = JSON.parse(data[0]);
-		decadeTemp = decadeTemp.map((item) => item.data);
-		let decadePr = JSON.parse(data2[0]);
-		decadePr = decadePr.map((item) => item.data);
+		// Decade temp chart data parse
+		// let decadeTemp = JSON.parse(data[0]);
+		// decadeTemp = decadeTemp.map((item) => item.data);
+		// let decadePr = JSON.parse(data2[0]);
+		// decadePr = decadePr.map((item) => item.data);
 
 		indicatorCharts.forEach((chart) => chart.destroy()); //Destroying the previous charts
 		indicatorCharts = [];
 
-		$(document).on('scroll', {indicators: indicators, decadeTemp: decadeTemp, decadePr: decadePr}, drawAllCharts);
+		$(document).on('scroll', {indicators: indicators}, drawAllCharts);
 		
 	});
 }
@@ -27148,7 +27152,7 @@ function drawAllCharts(e) {
 			id: 'electricity-indicator', max: 100, min: NaN, chartType: 'line', color: '#536162', delay: 2000, 
 			size: {fontSize: fontSize, borderWidth: borderWidth}
 		});
-		createTempChart(e.data.decadeTemp, e.data.decadePr, {fontSize: fontSize, borderWidth: borderWidth});
+		// createTempChart(e.data.decadeTemp, e.data.decadePr, {fontSize: fontSize, borderWidth: borderWidth});
 
 		$('body').find('.indicators-charts').removeClass('hide');
 	}

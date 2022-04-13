@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const https = require("https");
 const http = require("http");
 const async = require("async");
+const { resourceUsage } = require('process');
 
 const app = express();
 app.use(express.static("public"));
@@ -79,12 +80,18 @@ app.post("/api/weather/prediction", function(req, res) {
 
 /* GET COUNTRY INFO */
 const countryKey = process.env.COUNTRY_KEY
-app.post("/api/country", function(_, res) {
+app.post("/api/country", function(req, res) {
 	httpGet(`http://api.countrylayer.com/v2/all?access_key=${countryKey}`, function(err, serverRes) {
-		if ( err )
+		if ( err ) {
 			console.error(`Error: ${err.message}`);
-		else
-			res.send(serverRes);
+			res.statusCode(500).send()
+			return
+		}
+		let allCountryInfo = JSON.parse(serverRes);
+		let countryInfo = allCountryInfo.find(country => country.alpha2Code == req.body.iso2)
+		if ( !countryInfo )
+			res.statusCode(404).send({})
+		res.send(JSON.stringify(countryInfo));
 	});
 });
 
@@ -105,7 +112,7 @@ app.get("/api/geoip", function(req, res) {
 
 /* GET COUNTRY CLIMATE DATA */
 app.post("/api/worldbank/climate", function(req, res) {
-	http.get("http://climatedataapi.worldbank.org/climateweb/rest/v1/country/cru/" + req.body.var + "/decade/" + req.body.iso3, function(serverRes) {
+	http.get("http://climatedataapi.worldbank.org/climateweb/rest/v2/country/cru/" + req.body.var + "/decade/" + req.body.iso3, function(serverRes) {
 		serverRes.setEncoding('utf8');
 		let rawData = '';
 		serverRes.on('data', (chunk) => { rawData += chunk; });

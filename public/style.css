@@ -1809,10 +1809,10 @@ footer:hover {
 		width: 95%;
 		height: min-content;
 		padding: 0 2%;
-		display: flex;
-		flex-wrap: nowrap;
+		display: grid;
+		align-items: center;
 		overflow-x: scroll;
-		justify-content: start;
+		justify-content: center;
 		color: #1c1427;
 	}
 	.indicators-title {
