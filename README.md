@@ -4,7 +4,7 @@
 <summary><strong>&nbsp;P A G E &nbsp; L I N K &nbsp;🌎</strong></summary>
 <br>
 
-[Weather Web](https://weather-web-api.herokuapp.com/)
+[Weather Web →](https://weather-web-api.herokuapp.com/)
 </details>
 
 #
